@@ -5,6 +5,8 @@ const $firstColor = $('option[value="cornflowerblue"]');
 const $colorOption = $('#color option');
 const $activities = $('.activities');
 const $totalCost = $("<p></p>").text("Total: ");
+const $payment = $('#payment');
+const $paymentOption = $('#payment option');
 let $totalCostNumber = 0;
 
 
@@ -60,13 +62,62 @@ $design.on('change', function() {
 $activities.append($totalCost);
 
 /**
-  When the user clicks a checkbox,
+  When the user clicks a checkbox, it will find the data-cost attribute of the
+  checkbox. Then it will remove the dollar sign and convert the string to an int
+  Finally, it will check if the checkbox was checked or unchecked and adjust the price
+  accordingly
 */
 $activities.on('change', function(e){
-  const $checkbox = $(e.target);
-  let $itemCost = ($checkbox.data("cost"));
-  $itemCost = $itemCost.replace(/\D/, "")
+  const $checkbox = $(e.target); // The current selected checkbox
+  const $dateTime = ($checkbox.data("day-and-time")); // The date and time of selected checkbox
+  const $activityInput = $('.activities input'); // All of the checkboxes
+  let $itemCost = ($checkbox.data("cost")); // The cost of the selected checkbox
+  $itemCost = $itemCost.replace(/\D/, "");
   $itemCost = parseInt($itemCost);
   $checkbox.prop('checked') ? $totalCostNumber += $itemCost : $totalCostNumber-= $itemCost;
   $totalCost.text('Total: $' + $totalCostNumber);
+
+  /**
+    For each checkbox, get it's current date and time and check if it's the same as the selected
+    Also check to ensure that it isn't the current selected one. Then disable and conflicts
+  */
+  for (let i = 1; i < $activityInput.length; i++){
+    const $tempDateTime = $($activityInput[i]);
+      if ($tempDateTime.data("day-and-time") === $dateTime && $tempDateTime.attr('name') !== $checkbox.attr('name')){
+        if ($tempDateTime.attr('disabled')) {
+          $tempDateTime.attr('disabled', false);
+          $tempDateTime.parent().css("text-decoration", "none");
+        } else {
+          $tempDateTime.attr('disabled', true);
+          $tempDateTime.parent().css("text-decoration", "line-through");
+        }
+      }
+  }
 });
+
+// Hides the first payment option from selection
+$('#payment option:first').attr('disabled', true).attr('hidden', true);
+
+$payment.on('change', function(){
+  if ($payment.val() === "credit card"){
+    $('.credit-card').show();
+    $('.paypal').hide();
+    $('.bitcoin').hide();
+  } else if ($payment.val() === "paypal"){
+    $('.credit-card').hide();
+    $('.paypal').show();
+    $('.bitcoin').hide();
+  } else {
+    $('.credit-card').hide();
+    $('.paypal').hide();
+    $('.bitcoin').show();
+  }
+});
+
+$paymentOption.eq(1).attr('selected', true);
+$('.paypal').hide();
+$('.bitcoin').hide();
+
+const nameRegex = /^[a-z]+ [a-z]+$/i;
+const emailRegex = /^\S+\@\S+\.(com|net|org)$/i
+const
