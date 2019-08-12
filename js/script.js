@@ -7,6 +7,11 @@ const $activities = $('.activities');
 const $totalCost = $("<p></p>").text("Total: ");
 const $payment = $('#payment');
 const $paymentOption = $('#payment option');
+const $nameInput = $('#name');
+const $emailInput = $('#mail');
+const $ccInput = $('#cc-num');
+const $zipInput = $('#zip');
+const $cvvInput = $('#cvv');
 let $totalCostNumber = 0;
 
 
@@ -83,7 +88,8 @@ $activities.on('change', function(e){
   */
   for (let i = 1; i < $activityInput.length; i++){
     const $tempDateTime = $($activityInput[i]);
-      if ($tempDateTime.data("day-and-time") === $dateTime && $tempDateTime.attr('name') !== $checkbox.attr('name')){
+      if ($tempDateTime.data("day-and-time") === $dateTime &&
+          $tempDateTime.attr('name') !== $checkbox.attr('name')){
         if ($tempDateTime.attr('disabled')) {
           $tempDateTime.attr('disabled', false);
           $tempDateTime.parent().css("text-decoration", "none");
@@ -98,6 +104,7 @@ $activities.on('change', function(e){
 // Hides the first payment option from selection
 $('#payment option:first').attr('disabled', true).attr('hidden', true);
 
+// When the payment dropdown is changed, it will hide/show the relevant information
 $payment.on('change', function(){
   if ($payment.val() === "credit card"){
     $('.credit-card').show();
@@ -114,10 +121,108 @@ $payment.on('change', function(){
   }
 });
 
+// Shows credit card option by default
 $paymentOption.eq(1).attr('selected', true);
 $('.paypal').hide();
 $('.bitcoin').hide();
 
-const nameRegex = /^[a-z]+ [a-z]+$/i;
-const emailRegex = /^\S+\@\S+\.(com|net|org)$/i
-const
+
+
+
+
+
+const isValidName = () => {
+  const name = $nameInput.val();
+  if (/^([a-z]+) ?([a-z]+)$/i.test(name)){
+    $nameInput.css("border-color", "#6F9DDC");
+    return true;
+  } else {
+    $nameInput.css("border-color", "red");
+    return false;
+  }
+}
+
+const isValidEmail = () => {
+  const email = $emailInput.val();
+  if(/^\S+\@\S+\.(com|net|org)$/i.test(email)){
+    $emailInput.css("border-color", "#6F9DDC");
+    return true;
+  } else {
+    $emailInput.css("border-color", "red");
+    return false;
+  }
+}
+
+const validActivity = () => {
+  if ($('.activities input:checkbox:checked').length > 0) {
+    $activities.css("border", "none");
+    return true;
+  } else {
+    $activities.css("border", "2px solid red");
+    return false;
+  }
+}
+
+const isValidZip = () => {
+  const zip = $zipInput.val();
+  if ($payment.val() === "credit card"){
+    if(/^(\d{5})$/.test(zip)){
+      $zipInput.css("border-color", "#6F9DDC");
+      return true;
+    } else {
+      $zipInput.css("border-color", "red");
+      return false;
+    }
+  } else {
+    return true;
+  }
+}
+
+const isValidCard = () => {
+  const card = $ccInput.val();
+  if ($payment.val() === "credit card") {
+    if (/^(\d{13,16})/.test(card)){
+      $ccInput.css("border-color", "#6F9DDC");
+      return true;
+    } else {
+      $ccInput.css("border-color", "red");
+      return false;
+    }
+  } else {
+    return true;
+  }
+}
+
+const isValidCode = () => {
+  const code = $cvvInput.val();
+  if ($payment.val() === "credit card"){
+    if (/^(\d{3})/.test(code)){
+      $cvvInput.css("border-color", "#6F9DDC");
+      return true;
+    } else {
+      $cvvInput.css("border-color", "red");
+      return false;
+    }
+  } else {
+    return true;
+  }
+}
+
+$('form').submit(function() {
+  isValidName();
+  isValidEmail();
+  validActivity();
+  isValidZip();
+  isValidCard();
+  isValidCode();
+  if (isValidName() &&
+      isValidEmail() &&
+      validActivity() &&
+      isValidZip() &&
+      isValidCard() &&
+      isValidCode()){
+        return true;
+  } else {
+    return false;
+  }
+})
