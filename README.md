@@ -1,5 +1,5 @@
 # Interactive Form
-A front-end project to utilize JavaScript as well as REGEX's to create a dynamic form. 
+A front-end project to utilize JavaScript as well as REGEX's to create a dynamic form.
 
 
 ## Background
@@ -10,4 +10,5 @@ Created for Project 3 of the Treehouse Fullstack Tech Degree.
 
 ### Future Improvements
 
-Application is still in development.
+1. Custom errors for different form validations
+2. The code could be refactored for easier readability 

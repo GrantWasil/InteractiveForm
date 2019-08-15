@@ -181,7 +181,7 @@ const isValidZip = () => {
 const isValidCard = () => {
   const card = $ccInput.val();
   if ($payment.val() === "credit card") {
-    if (/^(\d{13,16})/.test(card)){
+    if (/^(\d{13,16})$/.test(card)){
       $ccInput.css("border-color", "#6F9DDC");
       return true;
     } else {
@@ -196,7 +196,7 @@ const isValidCard = () => {
 const isValidCode = () => {
   const code = $cvvInput.val();
   if ($payment.val() === "credit card"){
-    if (/^(\d{3})/.test(code)){
+    if (/^(\d{3})$/.test(code)){
       $cvvInput.css("border-color", "#6F9DDC");
       return true;
     } else {
